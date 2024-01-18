@@ -1,11 +1,11 @@
-import { Button } from "@radix-ui/themes";
+import { ArrowClockwise } from "@phosphor-icons/react";
+import { Button, Code, Flex } from "@radix-ui/themes";
 import {
 	KeyboardEvent,
 	MouseEvent,
 	useCallback,
 	useEffect,
 	useRef,
-	useState,
 } from "react";
 
 interface TimerProps {
@@ -35,10 +35,14 @@ function TimerResetButton(props: TimerResetButtonProps): JSX.Element {
 		[setNeedsReset, setRunTimer, setTime],
 	);
 
-	return <Button onClick={clickHandler}>Reset</Button>;
+	return (
+		<Button onClick={clickHandler}>
+			<ArrowClockwise weight="bold" />
+		</Button>
+	);
 }
 
-function Timer(props: TimerProps): JSX.Element {
+export default function Timer(props: TimerProps): JSX.Element {
 	const { setTime, runTimer, setRunTimer, needsReset, setNeedsReset } = props;
 	const tick = 10;
 	const timerRef = useRef<HTMLDivElement>(null);
@@ -72,34 +76,20 @@ function Timer(props: TimerProps): JSX.Element {
 	}, [setTime, runTimer]);
 
 	return (
-		<div tabIndex={-1} ref={timerRef} onKeyDown={spacebarHandler}>
-			<b>{(props.time / 1000).toFixed(props.runTimer ? 1 : 2)}</b>
+		<Flex
+			direction="column"
+			gap="2"
+			tabIndex={-1}
+			ref={timerRef}
+			onKeyDown={spacebarHandler}
+		>
+			<Code>{(props.time / 1000).toFixed(2)}</Code>
 			<br />
 			<TimerResetButton
 				setTime={props.setTime}
 				setRunTimer={props.setRunTimer}
 				setNeedsReset={props.setNeedsReset}
 			/>
-		</div>
-	);
-}
-
-export default function App(): JSX.Element {
-	const [runTimer, setRunTimer] = useState(false);
-	const [needsReset, setNeedsReset] = useState(false);
-	const [time, setTime] = useState(0);
-
-	return (
-		<>
-			<h1>chimptime</h1>
-			<Timer
-				time={time}
-				setTime={setTime}
-				runTimer={runTimer}
-				setRunTimer={setRunTimer}
-				needsReset={needsReset}
-				setNeedsReset={setNeedsReset}
-			/>
-		</>
+		</Flex>
 	);
 }

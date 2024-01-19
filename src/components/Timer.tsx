@@ -15,6 +15,7 @@ interface TimerProps {
 	setRunTimer: (value: React.SetStateAction<boolean>) => void;
 	needsReset: boolean;
 	setNeedsReset: (value: React.SetStateAction<boolean>) => void;
+	setTimes: (value: React.SetStateAction<number[]>) => void;
 }
 
 interface TimerResetButtonProps {
@@ -43,7 +44,15 @@ function TimerResetButton(props: TimerResetButtonProps): JSX.Element {
 }
 
 export default function Timer(props: TimerProps): JSX.Element {
-	const { setTime, runTimer, setRunTimer, needsReset, setNeedsReset } = props;
+	const {
+		time,
+		setTime,
+		runTimer,
+		setRunTimer,
+		needsReset,
+		setNeedsReset,
+		setTimes,
+	} = props;
 	const tick = 10;
 	const timerRef = useRef<HTMLDivElement>(null);
 
@@ -52,11 +61,12 @@ export default function Timer(props: TimerProps): JSX.Element {
 			if (event.key === " " && !event.repeat && !needsReset) {
 				if (runTimer) {
 					setNeedsReset(true);
+					setTimes((times) => [...times, time]);
 				}
 				setRunTimer((runTimer) => !runTimer);
 			}
 		},
-		[needsReset, runTimer, setNeedsReset, setRunTimer],
+		[needsReset, runTimer, setNeedsReset, setRunTimer, setTimes, time],
 	);
 
 	useEffect(() => {

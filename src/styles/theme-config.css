@@ -3,4 +3,8 @@
 .radix-themes {
     --default-font-family: "DM Sans", sans-serif;
     --code-font-family: "DM Mono", monospace;
-  }
+}
+
+body {
+    margin: 0;
+}

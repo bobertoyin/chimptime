@@ -1,6 +1,7 @@
 import { GitBranch, GithubLogo } from "@phosphor-icons/react";
 import { Code, Flex, Link, Separator, Text } from "@radix-ui/themes";
 
+import pkgJson from "../../package.json"; // TODO: get version without importing all of package.json
 import IconText from "./IconText";
 
 export default function Footer(): JSX.Element {
@@ -10,7 +11,7 @@ export default function Footer(): JSX.Element {
 				<Flex gap="3" align="center">
 					<Code>
 						<IconText>
-							<GitBranch />v{__APP_VERSION__}
+							<GitBranch />v{pkgJson.version}
 						</IconText>
 					</Code>
 					<Separator orientation="vertical" />

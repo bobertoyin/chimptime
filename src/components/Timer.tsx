@@ -1,5 +1,5 @@
 import { ArrowClockwise } from "@phosphor-icons/react";
-import { Button, Code, Flex } from "@radix-ui/themes";
+import { Code, Flex, IconButton, Tooltip } from "@radix-ui/themes";
 import {
 	KeyboardEvent,
 	MouseEvent,
@@ -8,6 +8,9 @@ import {
 	useRef,
 } from "react";
 
+import { db } from "../utils/db";
+import { displayTime } from "../utils/time";
+
 interface TimerProps {
 	time: number;
 	setTime: (value: React.SetStateAction<number>) => void;
@@ -15,7 +18,6 @@ interface TimerProps {
 	setRunTimer: (value: React.SetStateAction<boolean>) => void;
 	needsReset: boolean;
 	setNeedsReset: (value: React.SetStateAction<boolean>) => void;
-	setTimes: (value: React.SetStateAction<number[]>) => void;
 }
 
 interface TimerResetButtonProps {
@@ -37,36 +39,31 @@ function TimerResetButton(props: TimerResetButtonProps): JSX.Element {
 	);
 
 	return (
-		<Button onClick={clickHandler}>
-			<ArrowClockwise weight="bold" />
-		</Button>
+		<Tooltip content="Reset Timer">
+			<IconButton onClick={clickHandler}>
+				<ArrowClockwise weight="bold" />
+			</IconButton>
+		</Tooltip>
 	);
 }
 
 export default function Timer(props: TimerProps): JSX.Element {
-	const {
-		time,
-		setTime,
-		runTimer,
-		setRunTimer,
-		needsReset,
-		setNeedsReset,
-		setTimes,
-	} = props;
+	const { time, setTime, runTimer, setRunTimer, needsReset, setNeedsReset } =
+		props;
 	const tick = 10;
 	const timerRef = useRef<HTMLDivElement>(null);
 
 	const spacebarHandler = useCallback(
-		(event: KeyboardEvent<HTMLDivElement>) => {
+		async (event: KeyboardEvent<HTMLDivElement>) => {
 			if (event.key === " " && !event.repeat && !needsReset) {
 				if (runTimer) {
 					setNeedsReset(true);
-					setTimes((times) => [...times, time]);
+					db.times.add({ time, date: new Date(), plusTwo: false, dnf: false });
 				}
 				setRunTimer((runTimer) => !runTimer);
 			}
 		},
-		[needsReset, runTimer, setNeedsReset, setRunTimer, setTimes, time],
+		[needsReset, runTimer, setNeedsReset, setRunTimer, time],
 	);
 
 	useEffect(() => {
@@ -93,13 +90,15 @@ export default function Timer(props: TimerProps): JSX.Element {
 			ref={timerRef}
 			onKeyDown={spacebarHandler}
 		>
-			<Code>{(props.time / 1000).toFixed(2)}</Code>
+			<Code>{displayTime(time)}</Code>
 			<br />
-			<TimerResetButton
-				setTime={props.setTime}
-				setRunTimer={props.setRunTimer}
-				setNeedsReset={props.setNeedsReset}
-			/>
+			{!runTimer ? (
+				<TimerResetButton
+					setTime={props.setTime}
+					setRunTimer={props.setRunTimer}
+					setNeedsReset={props.setNeedsReset}
+				/>
+			) : null}
 		</Flex>
 	);
 }

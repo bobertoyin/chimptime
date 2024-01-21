@@ -18,6 +18,7 @@ import {
 } from "@radix-ui/themes";
 import { useLiveQuery } from "dexie-react-hooks";
 
+import * as Dialog from "@radix-ui/react-dialog";
 import { Time, db } from "../utils/db";
 import { displayTimeObj } from "../utils/time";
 
@@ -37,6 +38,21 @@ function TimeTableRow(props: TimeTableRowProps): JSX.Element {
 			<Table.Cell justify="center">{time.date.toLocaleString()}</Table.Cell>
 			<Table.Cell justify="center">
 				<Flex gap="2" justify="center" align="center">
+					<Dialog.Root>
+						<Dialog.Trigger asChild>
+							<Tooltip content="Edit">
+								<IconButton>
+									<Pencil weight="bold" />
+								</IconButton>
+							</Tooltip>
+						</Dialog.Trigger>
+						<Dialog.Portal>
+							<Dialog.Overlay />
+							<Dialog.Content>
+								<Dialog.Title>Edit profile</Dialog.Title>
+							</Dialog.Content>
+						</Dialog.Portal>
+					</Dialog.Root>
 					<Tooltip content="+2">
 						<IconButton
 							onClick={() =>

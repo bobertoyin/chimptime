@@ -1,5 +1,5 @@
-import { ArrowClockwise } from "@phosphor-icons/react";
-import { Code, Flex, IconButton, Tooltip } from "@radix-ui/themes";
+import { ArrowClockwise, Cube } from "@phosphor-icons/react";
+import { Code, Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import {
 	KeyboardEvent,
 	MouseEvent,
@@ -8,8 +8,12 @@ import {
 	useRef,
 } from "react";
 
+import { randomScrambleForEvent } from "cubing/scramble";
+import { useQuery, useQueryClient } from "react-query";
 import { db } from "../utils/db";
+import { Event, displayEvent } from "../utils/scramble";
 import { displayTime } from "../utils/time";
+import IconText from "./IconText";
 
 interface TimerProps {
 	time: number;
@@ -52,18 +56,41 @@ export default function Timer(props: TimerProps): JSX.Element {
 		props;
 	const tick = 10;
 	const timerRef = useRef<HTMLDivElement>(null);
+	const cubeEvent = Event.threeByThree;
+	const queryClient = useQueryClient();
+	const { isLoading, isError, data, error } = useQuery(
+		"scramble",
+		async () => await randomScrambleForEvent(cubeEvent),
+	);
 
 	const spacebarHandler = useCallback(
 		async (event: KeyboardEvent<HTMLDivElement>) => {
 			if (event.key === " " && !event.repeat && !needsReset) {
 				if (runTimer) {
 					setNeedsReset(true);
-					db.times.add({ time, date: new Date(), plusTwo: false, dnf: false });
+					db.times.add({
+						time,
+						date: new Date(),
+						plusTwo: false,
+						dnf: false,
+						event: cubeEvent,
+						scramble: data?.toString() ?? "",
+					});
+					queryClient.invalidateQueries("scramble");
 				}
 				setRunTimer((runTimer) => !runTimer);
 			}
 		},
-		[needsReset, runTimer, setNeedsReset, setRunTimer, time],
+		[
+			needsReset,
+			runTimer,
+			setNeedsReset,
+			setRunTimer,
+			time,
+			cubeEvent,
+			data,
+			queryClient,
+		],
 	);
 
 	useEffect(() => {
@@ -90,8 +117,22 @@ export default function Timer(props: TimerProps): JSX.Element {
 			ref={timerRef}
 			onKeyDown={spacebarHandler}
 		>
+			{!runTimer ? (
+				<IconText>
+					<Cube weight="bold" />
+					{displayEvent(cubeEvent)}
+				</IconText>
+			) : null}
+			{!runTimer ? (
+				<Text>
+					{isLoading
+						? "Loading scramble..."
+						: isError
+						  ? `Error: ${(error as Error).message}`
+						  : data?.toString()}
+				</Text>
+			) : null}
 			<Code>{displayTime(time)}</Code>
-			<br />
 			{!runTimer ? (
 				<TimerResetButton
 					setTime={props.setTime}

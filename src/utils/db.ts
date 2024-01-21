@@ -1,11 +1,14 @@
 import Dexie, { Table } from "dexie";
 
+import { Event } from "./scramble";
 import { Milliseconds } from "./time";
 
 export interface Time {
 	id?: number;
 	time: Milliseconds;
 	date: Date;
+	event: Event;
+	scramble: string;
 	plusTwo: boolean;
 	dnf: boolean;
 }
@@ -16,7 +19,7 @@ export class TimeDexie extends Dexie {
 	constructor() {
 		super("ChimpTimeDB");
 		this.version(1).stores({
-			times: "++id, time, date, plusTwo, dnf",
+			times: "++id, time, date, event, scramble, plusTwo, dnf",
 		});
 	}
 }

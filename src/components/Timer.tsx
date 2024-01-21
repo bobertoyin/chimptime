@@ -1,5 +1,5 @@
 import { ArrowClockwise, Cube } from "@phosphor-icons/react";
-import { Code, Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import { Card, Code, Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import {
 	KeyboardEvent,
 	MouseEvent,
@@ -110,36 +110,32 @@ export default function Timer(props: TimerProps): JSX.Element {
 	}, [setTime, runTimer]);
 
 	return (
-		<Flex
-			direction="column"
-			gap="2"
-			tabIndex={-1}
-			ref={timerRef}
-			onKeyDown={spacebarHandler}
-		>
-			{!runTimer ? (
-				<IconText>
-					<Cube weight="bold" />
-					{displayEvent(cubeEvent)}
-				</IconText>
-			) : null}
-			{!runTimer ? (
-				<Text>
-					{isLoading
-						? "Loading scramble..."
-						: isError
-						  ? `Error: ${(error as Error).message}`
-						  : data?.toString()}
-				</Text>
-			) : null}
-			<Code>{displayTime(time)}</Code>
-			{!runTimer ? (
-				<TimerResetButton
-					setTime={props.setTime}
-					setRunTimer={props.setRunTimer}
-					setNeedsReset={props.setNeedsReset}
-				/>
-			) : null}
-		</Flex>
+		<Card tabIndex={-1} ref={timerRef} onKeyDown={spacebarHandler} size="3">
+			<Flex direction="column" gap="2">
+				{!runTimer ? (
+					<IconText>
+						<Cube weight="bold" />
+						{displayEvent(cubeEvent)}
+					</IconText>
+				) : null}
+				{!runTimer ? (
+					<Text>
+						{isLoading
+							? "Loading scramble..."
+							: isError
+							  ? `Error: ${(error as Error).message}`
+							  : data?.toString()}
+					</Text>
+				) : null}
+				<Code>{displayTime(time)}</Code>
+				{!runTimer ? (
+					<TimerResetButton
+						setTime={props.setTime}
+						setRunTimer={props.setRunTimer}
+						setNeedsReset={props.setNeedsReset}
+					/>
+				) : null}
+			</Flex>
+		</Card>
 	);
 }

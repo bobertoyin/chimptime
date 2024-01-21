@@ -1,5 +1,6 @@
 import {
 	Calendar,
+	Cube,
 	HashStraight,
 	Pencil,
 	Plus,
@@ -20,6 +21,7 @@ import { useLiveQuery } from "dexie-react-hooks";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { Time, db } from "../utils/db";
+import { displayEvent } from "../utils/scramble";
 import { displayTimeObj } from "../utils/time";
 
 interface TimeTableRowProps {
@@ -35,6 +37,7 @@ function TimeTableRow(props: TimeTableRowProps): JSX.Element {
 			<Table.Cell justify="center">
 				<Code>{displayTimeObj(time)}</Code>
 			</Table.Cell>
+			<Table.Cell justify="center">{displayEvent(time.event)}</Table.Cell>
 			<Table.Cell justify="center">{time.date.toLocaleString()}</Table.Cell>
 			<Table.Cell justify="center">
 				<Flex gap="2" justify="center" align="center">
@@ -89,7 +92,7 @@ export default function TimeTable(): JSX.Element {
 
 	return (
 		<ScrollArea>
-			<Table.Root>
+			<Table.Root variant="surface">
 				<Table.Header>
 					<Table.Row align="center">
 						<Table.ColumnHeaderCell justify="center">
@@ -97,6 +100,9 @@ export default function TimeTable(): JSX.Element {
 						</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell justify="center">
 							<Timer weight="bold" />
+						</Table.ColumnHeaderCell>
+						<Table.ColumnHeaderCell justify="center">
+							<Cube weight="bold" />
 						</Table.ColumnHeaderCell>
 						<Table.ColumnHeaderCell justify="center">
 							<Calendar weight="bold" />

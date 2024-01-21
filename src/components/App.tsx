@@ -18,12 +18,11 @@ export default function App(): JSX.Element {
 					<NavBar />
 				</Flex>
 				<Grid
-					columns="2"
+					columns="1"
 					gap="6"
 					align="center"
 					style={{ minHeight: "150px", height: "calc(100vh - 200px)" }}
 				>
-					<TimeTable />
 					<Timer
 						time={time}
 						setTime={setTime}
@@ -32,6 +31,7 @@ export default function App(): JSX.Element {
 						needsReset={needsReset}
 						setNeedsReset={setNeedsReset}
 					/>
+					<TimeTable />
 				</Grid>
 				<Flex align="end" pb="5" style={{ height: "100px" }}>
 					<Footer />

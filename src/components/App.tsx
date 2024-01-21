@@ -19,7 +19,7 @@ export default function App(): JSX.Element {
 				</Flex>
 				<Grid
 					columns="2"
-					gap="3"
+					gap="6"
 					align="center"
 					style={{ minHeight: "150px", height: "calc(100vh - 200px)" }}
 				>

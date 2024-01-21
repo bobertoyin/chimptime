@@ -73,7 +73,7 @@ export default function TimeTable(): JSX.Element {
 
 	return (
 		<ScrollArea>
-			<Table.Root variant="surface">
+			<Table.Root>
 				<Table.Header>
 					<Table.Row align="center">
 						<Table.ColumnHeaderCell justify="center">

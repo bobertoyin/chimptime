@@ -94,7 +94,7 @@ export default function Timer(props: TimerProps): JSX.Element {
 	);
 
 	useEffect(() => {
-		let timerInterval: number | undefined;
+		let timerInterval: NodeJS.Timeout | undefined;
 
 		if (timerRef.current) {
 			timerRef.current.focus();

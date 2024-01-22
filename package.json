@@ -9,9 +9,10 @@
   },
   "scripts": {
     "dev": "parcel",
-    "build": "tsc && parcel build",
+    "build": "tsc && parcel build --public-url /",
     "lint": "biome lint src",
-    "format": "biome check --apply src"
+    "format": "biome check --apply src",
+    "serve": "serve -s dist"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.0.15",
@@ -23,7 +24,8 @@
     "dexie-react-hooks": "^1.1.7",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-query": "^3.39.3"
+    "react-query": "^3.39.3",
+    "serve": "^14.2.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.5.2",

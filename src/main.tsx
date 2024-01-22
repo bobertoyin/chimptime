@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { Theme } from "@radix-ui/themes";
 import { QueryClient, QueryClientProvider } from "react-query";
 
-import "@radix-ui/themes/styles.css";
 import "./styles/theme-config.css";
 
 import App from "./components/App.tsx";

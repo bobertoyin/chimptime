@@ -9,7 +9,7 @@
   },
   "scripts": {
     "dev": "parcel",
-    "build": "tsc && parcel build",
+    "build": "rm -rf dist && tsc && parcel build",
     "lint": "biome lint src",
     "format": "biome check --apply src",
     "serve": "parcel serve"

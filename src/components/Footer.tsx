@@ -15,7 +15,11 @@ export default function Footer(): JSX.Element {
 						</Flex>
 						<Text>
 							by{" "}
-							<Link href="https://bobertoyin.com" target="_blank" rel="noreferrer">
+							<Link
+								href="https://bobertoyin.com"
+								target="_blank"
+								rel="noreferrer"
+							>
 								Robert Yin
 							</Link>
 						</Text>

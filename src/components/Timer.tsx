@@ -1,15 +1,16 @@
-import { ArrowClockwise, Cube } from "@phosphor-icons/react";
+import { ArrowClockwise, ArrowsClockwise, Cube } from "@phosphor-icons/react";
 import { Card, Code, Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import { randomScrambleForEvent } from "cubing/scramble";
 import {
 	KeyboardEvent,
 	MouseEvent,
+	RefObject,
 	useCallback,
 	useEffect,
 	useRef,
 } from "react";
-
-import { randomScrambleForEvent } from "cubing/scramble";
 import { useQuery, useQueryClient } from "react-query";
+
 import { db } from "../utils/db";
 import { Event, displayEvent } from "../utils/scramble";
 import { displayTime } from "../utils/time";
@@ -28,18 +29,22 @@ interface TimerResetButtonProps {
 	setTime: (value: React.SetStateAction<number>) => void;
 	setRunTimer: (value: React.SetStateAction<boolean>) => void;
 	setNeedsReset: (value: React.SetStateAction<boolean>) => void;
+	timerRef: RefObject<HTMLDivElement>;
 }
 
 function TimerResetButton(props: TimerResetButtonProps): JSX.Element {
-	const { setNeedsReset, setRunTimer, setTime } = props;
+	const { setNeedsReset, setRunTimer, setTime, timerRef } = props;
 
 	const clickHandler = useCallback(
 		(_event: MouseEvent<HTMLButtonElement>) => {
 			setNeedsReset(false);
 			setRunTimer(false);
 			setTime(0);
+			if (timerRef.current) {
+				timerRef.current.focus();
+			}
 		},
-		[setNeedsReset, setRunTimer, setTime],
+		[setNeedsReset, setRunTimer, setTime, timerRef],
 	);
 
 	return (
@@ -64,7 +69,7 @@ export default function Timer(props: TimerProps): JSX.Element {
 	);
 
 	const spacebarHandler = useCallback(
-		async (event: KeyboardEvent<HTMLDivElement>) => {
+		(event: KeyboardEvent<HTMLDivElement>) => {
 			if (event.key === " " && !event.repeat && !needsReset) {
 				if (runTimer) {
 					setNeedsReset(true);
@@ -93,6 +98,13 @@ export default function Timer(props: TimerProps): JSX.Element {
 		],
 	);
 
+	const newScrambleHandler = useCallback(
+		(_event: MouseEvent<HTMLButtonElement>) => {
+			queryClient.invalidateQueries("scramble");
+		},
+		[queryClient],
+	);
+
 	useEffect(() => {
 		let timerInterval: NodeJS.Timeout | undefined;
 
@@ -110,32 +122,65 @@ export default function Timer(props: TimerProps): JSX.Element {
 	}, [setTime, runTimer]);
 
 	return (
-		<Card tabIndex={-1} ref={timerRef} onKeyDown={spacebarHandler} size="3">
-			<Flex direction="column" gap="2">
-				{!runTimer ? (
-					<IconText>
-						<Cube weight="bold" />
-						{displayEvent(cubeEvent)}
-					</IconText>
-				) : null}
-				{!runTimer ? (
-					<Text>
-						{isLoading
-							? "Loading scramble..."
-							: isError
-							  ? `Error: ${(error as Error).message}`
-							  : data?.toString()}
+		<>
+			{!runTimer ? (
+				<Flex direction="column" gap="3">
+					<Card size="3">
+						<Flex direction="column" gap="1">
+							<IconText>
+								<Cube weight="bold" />
+								<Text>{displayEvent(cubeEvent)}</Text>
+							</IconText>
+							<Text weight="bold">
+								{isLoading
+									? "Loading scramble..."
+									: isError
+									  ? `Error: ${(error as Error).message}`
+									  : data?.toString()}
+							</Text>
+							<Tooltip content="New Scramble">
+								<IconButton onClick={newScrambleHandler}>
+									<ArrowsClockwise weight="bold" />
+								</IconButton>
+							</Tooltip>
+						</Flex>
+					</Card>
+					<Card
+						tabIndex={-1}
+						ref={timerRef}
+						onKeyDown={spacebarHandler}
+						size="3"
+					>
+						<Flex direction="column" gap="5" justify="center" align="center">
+							<Text size="9">
+								<Code>{displayTime(time)}</Code>
+							</Text>
+							{!runTimer && needsReset ? (
+								<TimerResetButton
+									setTime={props.setTime}
+									setRunTimer={props.setRunTimer}
+									setNeedsReset={props.setNeedsReset}
+									timerRef={timerRef}
+								/>
+							) : null}
+						</Flex>
+					</Card>
+				</Flex>
+			) : (
+				<Flex
+					tabIndex={-1}
+					ref={timerRef}
+					onKeyDown={spacebarHandler}
+					justify="center"
+					align="center"
+					width="100%"
+					height="100%"
+				>
+					<Text size="9">
+						<Code>{displayTime(time)}</Code>
 					</Text>
-				) : null}
-				<Code>{displayTime(time)}</Code>
-				{!runTimer ? (
-					<TimerResetButton
-						setTime={props.setTime}
-						setRunTimer={props.setRunTimer}
-						setNeedsReset={props.setNeedsReset}
-					/>
-				) : null}
-			</Flex>
-		</Card>
+				</Flex>
+			)}
+		</>
 	);
 }

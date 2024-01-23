@@ -11,6 +11,7 @@ export interface Time {
 	scramble: string;
 	plusTwo: boolean;
 	dnf: boolean;
+	notes?: string;
 }
 
 export class TimeDexie extends Dexie {
@@ -19,7 +20,7 @@ export class TimeDexie extends Dexie {
 	constructor() {
 		super("ChimpTimeDB");
 		this.version(1).stores({
-			times: "++id, time, date, event, scramble, plusTwo, dnf",
+			times: "++id, time, date, event, plusTwo, dnf",
 		});
 	}
 }

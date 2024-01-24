@@ -74,9 +74,10 @@ export default function Timer(props: TimerProps): JSX.Element {
 	const spacebarHandler = useCallback(
 		async (event: KeyboardEvent<HTMLDivElement>) => {
 			if (event.key === " " && !event.repeat && !needsReset) {
+				setRunTimer((runTimer) => !runTimer);
 				if (runTimer) {
 					setNeedsReset(true);
-					await db.times.add({
+					await db.solves.add({
 						time,
 						date: new Date(),
 						plusTwo: false,
@@ -86,7 +87,6 @@ export default function Timer(props: TimerProps): JSX.Element {
 					});
 					await queryClient.invalidateQueries("scramble");
 				}
-				setRunTimer((runTimer) => !runTimer);
 			}
 		},
 		[

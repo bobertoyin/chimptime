@@ -2,10 +2,74 @@
 @import url("npm:@radix-ui/themes/styles.css");
 
 .radix-themes {
-    --default-font-family: "DM Sans", sans-serif;
-    --code-font-family: "DM Mono", monospace;
+	--default-font-family: "DM Sans", sans-serif;
+	--code-font-family: "DM Mono", monospace;
 }
 
 body {
-    margin: 0;
+	margin: 0;
+}
+
+.dialog-overlay {
+	background-color: var(--black-a9);
+	position: fixed;
+	inset: 0;
+	animation: overlay-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+  
+.dialog-content {
+	background-color: white;
+	border-radius: 6px;
+	box-shadow: hsl(206deg 22% 7% / 35%) 0 10px 38px -10px, hsl(206deg 22% 7% / 20%) 0 10px 20px -15px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 90vw;
+	max-width: 450px;
+	max-height: 85vh;
+	padding: 25px;
+	animation: content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialog-content:focus {
+	outline: none;
+}
+
+.dialog-title, .dialog-description {
+	font-family: var(--default-font-family);
+}
+
+.dialog-title {
+	margin: 0;
+	font-weight: 500;
+	font-size: 17px;
+}
+  
+.dialog-description {
+	margin: 10px 0 20px;
+	font-size: 15px;
+	line-height: 1.5;
+}
+
+@keyframes overlay-show {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+  
+@keyframes content-show {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -48%) scale(0.96);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
 }

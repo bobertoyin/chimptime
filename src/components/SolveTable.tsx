@@ -20,46 +20,56 @@ import {
 import { useLiveQuery } from "dexie-react-hooks";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { Time, db } from "../utils/db";
+import { Solve, db } from "../utils/db";
 import { displayEvent } from "../utils/scramble";
 import { displayTimeObj } from "../utils/time";
 
 interface TimeTableRowProps {
-	time: Time;
+	solve: Solve;
 	index: number;
 }
 
-function TimeTableRow(props: TimeTableRowProps): JSX.Element {
-	const { time, index } = props;
+function SolveTableRow(props: TimeTableRowProps): JSX.Element {
+	const { solve, index } = props;
 	return (
-		<Table.Row key={time.id} align="center">
+		<Table.Row key={solve.id} align="center">
 			<Table.RowHeaderCell justify="center">{index}</Table.RowHeaderCell>
 			<Table.Cell justify="center">
-				<Code>{displayTimeObj(time)}</Code>
+				<Code>{displayTimeObj(solve)}</Code>
 			</Table.Cell>
-			<Table.Cell justify="center">{displayEvent(time.event)}</Table.Cell>
-			<Table.Cell justify="center">{time.date.toLocaleString()}</Table.Cell>
+			<Table.Cell justify="center">{displayEvent(solve.event)}</Table.Cell>
+			<Table.Cell justify="center">{solve.date.toLocaleString()}</Table.Cell>
 			<Table.Cell justify="center">
 				<Flex gap="2" justify="center" align="center">
 					<Dialog.Root>
-						<Dialog.Trigger asChild>
-							<Tooltip content="Edit">
+						<Tooltip content="Edit">
+							<Dialog.Trigger asChild>
 								<IconButton>
 									<Pencil weight="bold" />
 								</IconButton>
-							</Tooltip>
-						</Dialog.Trigger>
+							</Dialog.Trigger>
+						</Tooltip>
 						<Dialog.Portal>
-							<Dialog.Overlay />
-							<Dialog.Content>
-								<Dialog.Title>Edit profile</Dialog.Title>
+							<Dialog.Overlay className="dialog-overlay" />
+							<Dialog.Content className="dialog-content">
+								<Tooltip content="Close">
+									<Dialog.Close asChild>
+										<IconButton>
+											<X weight="bold" />
+										</IconButton>
+									</Dialog.Close>
+								</Tooltip>
+								<Dialog.Title className="dialog-title">Edit Solve</Dialog.Title>
+								<Dialog.Description className="dialog-description">
+									{JSON.stringify(solve)}
+								</Dialog.Description>
 							</Dialog.Content>
 						</Dialog.Portal>
 					</Dialog.Root>
 					<Tooltip content="+2">
 						<IconButton
 							onClick={() =>
-								db.times.update(time.id ?? 0, { plusTwo: !time.plusTwo })
+								db.solves.update(solve.id ?? 0, { plusTwo: !solve.plusTwo })
 							}
 						>
 							<Plus weight="bold" />
@@ -67,7 +77,9 @@ function TimeTableRow(props: TimeTableRowProps): JSX.Element {
 					</Tooltip>
 					<Tooltip content="DNF">
 						<IconButton
-							onClick={() => db.times.update(time.id ?? 0, { dnf: !time.dnf })}
+							onClick={() =>
+								db.solves.update(solve.id ?? 0, { dnf: !solve.dnf })
+							}
 						>
 							<Prohibit weight="bold" />
 						</IconButton>
@@ -76,7 +88,7 @@ function TimeTableRow(props: TimeTableRowProps): JSX.Element {
 			</Table.Cell>
 			<Table.Cell justify="center">
 				<Tooltip content="Delete">
-					<IconButton onClick={() => db.times.delete(time.id ?? 0)}>
+					<IconButton onClick={() => db.solves.delete(solve.id ?? 0)}>
 						<X weight="bold" />
 					</IconButton>
 				</Tooltip>
@@ -85,9 +97,9 @@ function TimeTableRow(props: TimeTableRowProps): JSX.Element {
 	);
 }
 
-export default function TimeTable(): JSX.Element {
-	const times = useLiveQuery(() =>
-		db.times.toArray().then((array) => array.reverse()),
+export default function SolveTable(): JSX.Element {
+	const solves = useLiveQuery(async () =>
+		(await db.solves.orderBy("date").toArray()).reverse(),
 	);
 
 	return (
@@ -117,8 +129,8 @@ export default function TimeTable(): JSX.Element {
 				</Table.Header>
 
 				<Table.Body>
-					{times?.map((time, index, times) => (
-						<TimeTableRow time={time} index={times.length - index} />
+					{solves?.map((solve, index, solves) => (
+						<SolveTableRow solve={solve} index={solves.length - index} />
 					))}
 				</Table.Body>
 			</Table.Root>

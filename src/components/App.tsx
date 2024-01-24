@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import Footer from "./Footer";
 import NavBar from "./Navbar";
-import TimeTable from "./TimeTable";
+import SolveTable from "./SolveTable";
 import Timer from "./Timer";
 
 export default function App(): JSX.Element {
@@ -32,7 +32,7 @@ export default function App(): JSX.Element {
 							needsReset={needsReset}
 							setNeedsReset={setNeedsReset}
 						/>
-						{!runTimer ? <TimeTable /> : null}
+						{!runTimer ? <SolveTable /> : null}
 					</Grid>
 					<Flex align="end" pb="5" style={{ height: "100px" }}>
 						<Footer />

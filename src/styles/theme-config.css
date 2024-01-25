@@ -1,11 +1,60 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import url("npm:@radix-ui/themes/styles.css");
 
+
 .radix-themes {
-    --default-font-family: "DM Sans", sans-serif;
-    --code-font-family: "DM Mono", monospace;
+	--default-font-family: "DM Sans", sans-serif;
+	--code-font-family: "DM Mono", monospace;
 }
 
 body {
-    margin: 0;
+	margin: 0;
+}
+
+.dialog-overlay {
+	background-color: var(--black-a9);
+	position: fixed;
+	inset: 0;
+	animation: overlay-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+  
+.dialog-content {
+	background-color: var(--gray-1);
+	border-radius: 6px;
+	box-shadow: hsl(206deg 22% 7% / 35%) 0 10px 38px -10px, hsl(206deg 22% 7% / 20%) 0 10px 20px -15px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 85vw;
+	max-width: 450px;
+	max-height: 85vh;
+	padding: 25px;
+	animation: content-show 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dialog-content:focus {
+	outline: none;
+}
+
+@keyframes overlay-show {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+  
+@keyframes content-show {
+	from {
+		opacity: 0;
+		transform: translate(-50%, -48%) scale(0.96);
+	}
+
+	to {
+		opacity: 1;
+		transform: translate(-50%, -50%) scale(1);
+	}
 }

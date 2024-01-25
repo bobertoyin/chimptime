@@ -66,14 +66,18 @@ export default function Timer(props: TimerProps): JSX.Element {
 	const { isLoading, isError, data, error } = useQuery(
 		"scramble",
 		async () => await randomScrambleForEvent(cubeEvent),
+		{
+			staleTime: Infinity,
+		},
 	);
 
 	const spacebarHandler = useCallback(
-		(event: KeyboardEvent<HTMLDivElement>) => {
+		async (event: KeyboardEvent<HTMLDivElement>) => {
 			if (event.key === " " && !event.repeat && !needsReset) {
+				setRunTimer((runTimer) => !runTimer);
 				if (runTimer) {
 					setNeedsReset(true);
-					db.times.add({
+					await db.solves.add({
 						time,
 						date: new Date(),
 						plusTwo: false,
@@ -81,9 +85,8 @@ export default function Timer(props: TimerProps): JSX.Element {
 						event: cubeEvent,
 						scramble: data?.toString() ?? "",
 					});
-					queryClient.invalidateQueries("scramble");
+					await queryClient.invalidateQueries("scramble");
 				}
-				setRunTimer((runTimer) => !runTimer);
 			}
 		},
 		[
@@ -148,7 +151,7 @@ export default function Timer(props: TimerProps): JSX.Element {
 					<Card
 						tabIndex={-1}
 						ref={timerRef}
-						onKeyDown={spacebarHandler}
+						onKeyDown={data ? spacebarHandler : undefined}
 						size="3"
 					>
 						<Flex direction="column" gap="5" justify="center" align="center">

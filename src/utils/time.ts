@@ -1,13 +1,13 @@
-import { Time } from "./db";
+import { Solve } from "./db";
 
 export type Milliseconds = number;
 
-export function displayTimeObj(time: Time): string {
-	if (time.dnf) {
-		return "DNF";
+export function displaySolve(solve: Solve, detailed = false): string {
+	if (solve.dnf) {
+		return detailed ? `DNF(${displayTime(solve.time)})` : "DNF";
 	}
-	return `${time.plusTwo ? "+" : ""}${displayTime(
-		time.time + (time.plusTwo ? 2000 : 0),
+	return `${solve.plusTwo ? "+" : ""}${displayTime(
+		solve.time + (solve.plusTwo ? 2000 : 0),
 	)}`;
 }
 

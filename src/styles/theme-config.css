@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap');
 @import url("npm:@radix-ui/themes/styles.css");
 
+
 .radix-themes {
 	--default-font-family: "DM Sans", sans-serif;
 	--code-font-family: "DM Mono", monospace;
@@ -18,14 +19,14 @@ body {
 }
   
 .dialog-content {
-	background-color: white;
+	background-color: var(--gray-1);
 	border-radius: 6px;
 	box-shadow: hsl(206deg 22% 7% / 35%) 0 10px 38px -10px, hsl(206deg 22% 7% / 20%) 0 10px 20px -15px;
 	position: fixed;
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	width: 90vw;
+	width: 85vw;
 	max-width: 450px;
 	max-height: 85vh;
 	padding: 25px;
@@ -34,22 +35,6 @@ body {
 
 .dialog-content:focus {
 	outline: none;
-}
-
-.dialog-title, .dialog-description {
-	font-family: var(--default-font-family);
-}
-
-.dialog-title {
-	margin: 0;
-	font-weight: 500;
-	font-size: 17px;
-}
-  
-.dialog-description {
-	margin: 10px 0 20px;
-	font-size: 15px;
-	line-height: 1.5;
 }
 
 @keyframes overlay-show {

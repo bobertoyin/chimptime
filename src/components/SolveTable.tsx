@@ -1,6 +1,7 @@
 import {
 	Calendar,
 	Cube,
+	FloppyDisk,
 	HashStraight,
 	Pencil,
 	Plus,
@@ -10,11 +11,14 @@ import {
 	X,
 } from "@phosphor-icons/react";
 import {
+	Box,
 	Code,
 	Flex,
 	IconButton,
 	ScrollArea,
 	Table,
+	Text,
+	TextArea,
 	Tooltip,
 } from "@radix-ui/themes";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -22,7 +26,8 @@ import { useLiveQuery } from "dexie-react-hooks";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Solve, db } from "../utils/db";
 import { displayEvent } from "../utils/scramble";
-import { displayTimeObj } from "../utils/time";
+import { displaySolve } from "../utils/time";
+import IconText from "./IconText";
 
 interface TimeTableRowProps {
 	solve: Solve;
@@ -31,11 +36,12 @@ interface TimeTableRowProps {
 
 function SolveTableRow(props: TimeTableRowProps): JSX.Element {
 	const { solve, index } = props;
+	let new_notes: string;
 	return (
 		<Table.Row key={solve.id} align="center">
 			<Table.RowHeaderCell justify="center">{index}</Table.RowHeaderCell>
 			<Table.Cell justify="center">
-				<Code>{displayTimeObj(solve)}</Code>
+				<Code>{displaySolve(solve)}</Code>
 			</Table.Cell>
 			<Table.Cell justify="center">{displayEvent(solve.event)}</Table.Cell>
 			<Table.Cell justify="center">{solve.date.toLocaleString()}</Table.Cell>
@@ -49,9 +55,9 @@ function SolveTableRow(props: TimeTableRowProps): JSX.Element {
 								</IconButton>
 							</Dialog.Trigger>
 						</Tooltip>
-						<Dialog.Portal>
-							<Dialog.Overlay className="dialog-overlay" />
-							<Dialog.Content className="dialog-content">
+						<Dialog.Overlay className="dialog-overlay" />
+						<Dialog.Content className="dialog-content">
+							<Flex direction="column" gap="4">
 								<Tooltip content="Close">
 									<Dialog.Close asChild>
 										<IconButton>
@@ -59,17 +65,53 @@ function SolveTableRow(props: TimeTableRowProps): JSX.Element {
 										</IconButton>
 									</Dialog.Close>
 								</Tooltip>
-								<Dialog.Title className="dialog-title">Edit Solve</Dialog.Title>
-								<Dialog.Description className="dialog-description">
-									{JSON.stringify(solve)}
+								<Dialog.Title style={{ margin: 0 }}>
+									Solve #{index}
+								</Dialog.Title>
+								<Dialog.Description>
+									<Flex
+										direction="column"
+										gap="3"
+										justify="center"
+										align="center"
+									>
+										<Box>
+											<Code size="6">{displaySolve(solve, true)}</Code>
+										</Box>
+										<IconText>
+											<Cube weight="bold" />
+											<Text size="3">{displayEvent(solve.event)}</Text>
+										</IconText>
+										<Text size="3">{solve.date.toLocaleString()}</Text>
+										<Text size="3">{solve.scramble}</Text>
+									</Flex>
 								</Dialog.Description>
-							</Dialog.Content>
-						</Dialog.Portal>
+								<TextArea
+									placeholder="Notes"
+									defaultValue={solve.notes}
+									onChange={(event) => {
+										new_notes = event.target.value;
+									}}
+								/>
+								<Tooltip content="Save">
+									<IconButton
+										onClick={() =>
+											db.solves.update(solve.id ?? 0, { notes: new_notes })
+										}
+									>
+										<FloppyDisk weight="bold" />
+									</IconButton>
+								</Tooltip>
+							</Flex>
+						</Dialog.Content>
 					</Dialog.Root>
 					<Tooltip content="+2">
 						<IconButton
 							onClick={() =>
-								db.solves.update(solve.id ?? 0, { plusTwo: !solve.plusTwo })
+								db.solves.update(solve.id ?? 0, {
+									plusTwo: !solve.plusTwo,
+									dnf: false,
+								})
 							}
 						>
 							<Plus weight="bold" />
@@ -78,7 +120,10 @@ function SolveTableRow(props: TimeTableRowProps): JSX.Element {
 					<Tooltip content="DNF">
 						<IconButton
 							onClick={() =>
-								db.solves.update(solve.id ?? 0, { dnf: !solve.dnf })
+								db.solves.update(solve.id ?? 0, {
+									dnf: !solve.dnf,
+									plusTwo: false,
+								})
 							}
 						>
 							<Prohibit weight="bold" />

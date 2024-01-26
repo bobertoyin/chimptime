@@ -1,6 +1,13 @@
 import { Container, Flex, Grid } from "@radix-ui/themes";
 import { randomScrambleForEvent } from "cubing/scramble";
-import { KeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import {
+	KeyboardEvent,
+	TouchEvent,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { useQuery, useQueryClient } from "react-query";
 
 import { db } from "../utils/db";
@@ -28,12 +35,14 @@ export default function App(): JSX.Element {
 		},
 	);
 
-	const spacebarHandler = useCallback(
-		async (event: KeyboardEvent<HTMLDivElement>) => {
+	const timerHandler = useCallback(
+		async (
+			event: KeyboardEvent<HTMLDivElement> | TouchEvent<HTMLDivElement>,
+		) => {
 			if (
-				(event.key === " " || runTimer) &&
+				(("key" in event ? event.key === " " : true) || runTimer) &&
 				timerRef.current === document.activeElement &&
-				!event.repeat &&
+				("repeat" in event ? !event.repeat : true) &&
 				!needsReset
 			) {
 				setRunTimer((runTimer) => !runTimer);
@@ -82,7 +91,7 @@ export default function App(): JSX.Element {
 		<div
 			style={{ height: "100vh" }}
 			ref={timerRef}
-			onKeyDown={scrambleResult.data ? spacebarHandler : undefined}
+			onKeyDown={scrambleResult.data ? timerHandler : undefined}
 			tabIndex={-1}
 		>
 			{!runTimer ? (
@@ -107,6 +116,7 @@ export default function App(): JSX.Element {
 								setRunTimer={setRunTimer}
 								needsReset={needsReset}
 								setNeedsReset={setNeedsReset}
+								touchHandler={scrambleResult.data ? timerHandler : undefined}
 							/>
 						</Flex>
 						{!runTimer ? <SolveTable /> : null}
@@ -125,6 +135,7 @@ export default function App(): JSX.Element {
 					setRunTimer={setRunTimer}
 					needsReset={needsReset}
 					setNeedsReset={setNeedsReset}
+					touchHandler={scrambleResult.data ? timerHandler : undefined}
 				/>
 			)}
 		</div>

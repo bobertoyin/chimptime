@@ -50,7 +50,7 @@ export default function App(): JSX.Element {
 					setNeedsReset(true);
 					await db.solves.add({
 						time,
-						date: new Date(),
+						date: new Date().getTime(),
 						plusTwo: false,
 						dnf: false,
 						event: cubeEvent,
@@ -102,7 +102,7 @@ export default function App(): JSX.Element {
 					<Grid
 						columns="1"
 						gap="3"
-						align="center"
+						align="start"
 						style={{ minHeight: "150px", height: "calc(100vh - 200px)" }}
 					>
 						<Flex direction="column" gap="3">

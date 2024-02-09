@@ -25,7 +25,7 @@ export default function ScrambleCard(props: ScrambleCardProps): JSX.Element {
 	);
 
 	return (
-		<Card size="3">
+		<Card size="3" mt="4">
 			<Flex direction="column" gap="1">
 				<IconText>
 					<Cube weight="bold" />

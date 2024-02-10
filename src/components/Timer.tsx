@@ -1,5 +1,5 @@
 import { ArrowClockwise } from "@phosphor-icons/react";
-import { Card, Code, Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
+import { Code, Flex, IconButton, Text, Tooltip } from "@radix-ui/themes";
 import { MouseEvent, RefObject, TouchEventHandler, useCallback } from "react";
 
 import { Event } from "../utils/scramble";
@@ -61,21 +61,26 @@ export default function Timer(props: TimerProps): JSX.Element {
 	} = props;
 
 	return !runTimer ? (
-		<Card size="3" onTouchStart={touchHandler}>
-			<Flex direction="column" gap="5" justify="center" align="center">
-				<Text size="9">
-					<Code>{displayTime(time)}</Code>
-				</Text>
-				{!runTimer && needsReset ? (
-					<TimerResetButton
-						timerRef={timerRef}
-						setTime={setTime}
-						setRunTimer={setRunTimer}
-						setNeedsReset={setNeedsReset}
-					/>
-				) : null}
-			</Flex>
-		</Card>
+		<Flex
+			direction="column"
+			gap="5"
+			justify="center"
+			align="center"
+			my="9"
+			onTouchStart={touchHandler}
+		>
+			<Text size="9">
+				<Code>{displayTime(time)}</Code>
+			</Text>
+			{!runTimer && needsReset ? (
+				<TimerResetButton
+					timerRef={timerRef}
+					setTime={setTime}
+					setRunTimer={setRunTimer}
+					setNeedsReset={setNeedsReset}
+				/>
+			) : null}
+		</Flex>
 	) : (
 		<Flex
 			justify="center"

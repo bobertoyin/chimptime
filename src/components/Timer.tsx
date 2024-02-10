@@ -61,7 +61,14 @@ export default function Timer(props: TimerProps): JSX.Element {
 	} = props;
 
 	return !runTimer ? (
-		<Flex direction="column" gap="5" justify="center" align="center" my="9">
+		<Flex
+			direction="column"
+			gap="5"
+			justify="center"
+			align="center"
+			my="9"
+			onTouchStart={touchHandler}
+		>
 			<Text size="9">
 				<Code>{displayTime(time)}</Code>
 			</Text>

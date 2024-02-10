@@ -178,7 +178,7 @@ export default function SolveTable(): JSX.Element {
 
 	return (
 		<ScrollArea>
-			<Flex direction="column" gap="4" p="1">
+			<Flex direction="column" gap="4" style={{ padding: "5px 5px 0" }}>
 				<Toolbar.Root aria-label="Table options">
 					<Flex gap="2">
 						<Tooltip content="Import">

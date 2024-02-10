@@ -28,6 +28,7 @@ import {
 	Tooltip,
 } from "@radix-ui/themes";
 import { useLiveQuery } from "dexie-react-hooks";
+import { useRef } from "react";
 
 import { Solve, db } from "../utils/db";
 import { displayEvent } from "../utils/scramble";
@@ -148,6 +149,27 @@ function SolveTableRow(props: TimeTableRowProps): JSX.Element {
 	);
 }
 
+function UploadButton(): JSX.Element {
+	const fileInput = useRef<HTMLInputElement>(null);
+
+	return (
+		<IconButton onClick={(_event) => fileInput.current?.click()}>
+			<UploadSimple weight="bold" />
+			<input
+				type="file"
+				hidden
+				ref={fileInput}
+				onChange={async (event) => {
+					const file = event.target.files?.item(0);
+					if (file) {
+						await db.uploadCSV(file);
+					}
+				}}
+			/>
+		</IconButton>
+	);
+}
+
 export default function SolveTable(): JSX.Element {
 	const solves = useLiveQuery(async () =>
 		(await db.solves.orderBy("date").toArray()).reverse(),
@@ -156,14 +178,12 @@ export default function SolveTable(): JSX.Element {
 
 	return (
 		<ScrollArea>
-			<Flex direction="column" gap="4">
+			<Flex direction="column" gap="4" p="1">
 				<Toolbar.Root aria-label="Table options">
 					<Flex gap="2">
 						<Tooltip content="Import">
-							<Toolbar.ToolbarButton asChild disabled={true}>
-								<IconButton>
-									<UploadSimple weight="bold" />
-								</IconButton>
+							<Toolbar.ToolbarButton asChild>
+								<UploadButton />
 							</Toolbar.ToolbarButton>
 						</Tooltip>
 						<Tooltip content="Export">
